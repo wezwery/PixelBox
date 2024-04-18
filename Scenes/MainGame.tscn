@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://dnuq6278lei6e"]
+
+[ext_resource type="Script" path="res://Scenes/MainGame.cs" id="1_331k3"]
+[ext_resource type="PackedScene" uid="uid://fauedixtx5wr" path="res://WezweryGodotTools/Scenes/FreeCamera2D.tscn" id="2_va2q0"]
+[ext_resource type="Script" path="res://Scenes/UI.cs" id="3_5tmgb"]
+[ext_resource type="PackedScene" uid="uid://edtueommhelq" path="res://Nodes/PixelData.tscn" id="3_ptsef"]
+
+[node name="MainGame" type="Node2D" node_paths=PackedStringArray("simulation", "camera", "ui")]
+script = ExtResource("1_331k3")
+simulation = NodePath("Simulation")
+camera = NodePath("FreeCamera2D")
+ui = NodePath("UI")
+SimulationSize = Vector2i(150, 150)
+
+[node name="Simulation" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 1
+centered = false
+
+[node name="FreeCamera2D" parent="." instance=ExtResource("2_va2q0")]
+zoom = Vector2(5, 5)
+
+[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid")]
+script = ExtResource("3_5tmgb")
+pixelDataScene = ExtResource("3_ptsef")
+grid = NodePath("Pixels/Grid")
+
+[node name="Pixels" type="ColorRect" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0, 0, 0, 0.196078)
+
+[node name="Grid" type="HBoxContainer" parent="UI/Pixels"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
