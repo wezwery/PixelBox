@@ -15,4 +15,7 @@ public static class PixelDataIDs
     public const byte GRAVEL_ID = 11;
     public const byte BLACK_HOLE_ID = 12;
     public const byte WOOD_ID = 13;
+    public const byte SAW_DAST_ID = 14;
+    public const byte WEB_ID = 15;
+    public const byte LIGHTER_ID = 16;
 }

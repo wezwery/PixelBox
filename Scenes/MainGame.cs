@@ -25,11 +25,11 @@ public partial class MainGame : Node2D
     private Image simulationImage;
     private ImageTexture simulationTexture;
     private int radius = 2;
-    private bool paused = false;
     private int selectedPixelType = 0;
 
     public static MainGame Instance { get; private set; }
 
+    public bool Paused = false;
     public Vector2I MousePoint { get; private set; } = new Vector2I();
     public bool IsMousePointValid => SimulationData.IsValid(MousePoint.X, MousePoint.Y);
 
@@ -88,6 +88,9 @@ public partial class MainGame : Node2D
 
         ui.CreatePixelDatas();
         ui.UpdateSelectedPixelData(selectedPixelType);
+        ui.UpdatePauseIcon();
+        ui.UpdateSpeedBtn(1);
+        SetSpeed(1f);
     }
 
     public override void _Process(double delta)
@@ -95,7 +98,7 @@ public partial class MainGame : Node2D
 #if DEBUG
         Debugger.DisplayText($"TPS: {debug_lastTicks} / {ticksPerSecond}"); // TICKS PER SECOND
         Debugger.DisplayText($"SLL: {simulationUpdater.SkipLostLoops}"); // SKIP LOST LOOPS
-        Debugger.DisplayText($"Paused: {paused}"); // PAUSED
+        Debugger.DisplayText($"Paused: {Paused}"); // PAUSED
         Debugger.DisplayText($"Selected Pixel Type: {PixelDataEnums.Names[selectedPixelType]}"); // SELECTED PIXEL TYPE
 
         if (IsMousePointValid)
@@ -114,8 +117,11 @@ public partial class MainGame : Node2D
 #endif
 
         MousePoint = GetGlobalMousePosition().FloorToInt();
+    }
 
-        simulationUpdater.WaitTime = Input.IsActionPressed("SpeedUp") ? (double)((1f / ticksPerSecond) / 2f) : (double)(1f / ticksPerSecond);
+    public void SetSpeed(float speed)
+    {
+        simulationUpdater.WaitTime = 1f / ticksPerSecond / speed;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -153,12 +159,14 @@ public partial class MainGame : Node2D
         }
         if (Input.IsActionJustPressed("Pause"))
         {
-            paused = !paused;
+            Paused = !Paused;
+            ui.UpdatePauseIcon();
         }
-        if (Input.IsActionJustPressed("Clear"))
-        {
-            SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
-        }
+    }
+
+    public void Clear()
+    {
+        SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
     }
 
     public void SetSelectedPixelType(int index)
@@ -173,7 +181,7 @@ public partial class MainGame : Node2D
         debug_currentTicks++;
 #endif
 
-        if (paused == false)
+        if (Paused == false)
         {
             SimulationData = PixelBoxPhysics.Update(SimulationSize, SimulationData);
         }
@@ -185,7 +193,7 @@ public partial class MainGame : Node2D
                 PixelData data = SimulationData[x, y];
                 if (data.HasPixel())
                 {
-                    Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) : data.Color;
+                    Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) : data.Color.ToColor();
                     simulationImage.SetPixel(x, y, color);
                 }
                 else

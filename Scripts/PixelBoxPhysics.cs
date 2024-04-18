@@ -101,7 +101,8 @@ public static class PixelBoxPhysics
                         }
                         if (MyMath.RandomPercent <= simulationData[x, y].GetChanceToDestroyByFire())
                         {
-                            simulationData[x, y] = default;
+                            if (data.ID == WOOD_ID) simulationData[x, y] = SMOKE;
+                            else simulationData[x, y] = default;
                             continue;
                         }
                     }
@@ -155,6 +156,14 @@ public static class PixelBoxPhysics
                                         }
                                         break;
                                     }
+                                case LIGHTER_ID:
+                                    {
+                                        if (IsValidAndEmpty(x, y - 1))
+                                        {
+                                            simulationData[x, y - 1] = FIRE;
+                                        }
+                                        break;
+                                    }
                             }
                             break;
                         }
@@ -178,6 +187,7 @@ public static class PixelBoxPhysics
                                         if (MyMath.RandomPercent <= 0.1f && (IsValid(newPos.X, newPos.Y - 1) == false || simulationData[newPos.X, newPos.Y].ID == 5))
                                         {
                                             simulationData[newPos.X, newPos.Y] = WATER;
+                                            simulationData[newPos.X, newPos.Y].Updated = true;
                                         }
                                         break;
                                     }

@@ -1,14 +1,20 @@
 id,en,ru,uk
-SAND,Sand,Песок,
-SMOKE,Smoke,Дым,
-ACID,Acid,Кислота,
-WATER,Water,Вода,
-STEAM,Steam,Пар,
-BRICK,Brick,Кирпич,
-COAL,Coal,Уголь,
-FIRE,Fire,Огонь,
-CLOUD,Cloud,Облако,
-STORM_CLOUD,Storm cloud,Штормовое облако,
-GRAVEL,Gravel,Гравий,
-BLACK_HOLE,Black hole,Чёрная дыра,
-WOOD,Wood,Дерево,
+SAND,Sand,Песок,Пісок
+SMOKE,Smoke,Дым,Дим
+ACID,Acid,Кислота,Кислота
+WATER,Water,Вода,Вода
+STEAM,Steam,Пар,Пар
+BRICK,Brick,Кирпич,Цегла
+COAL,Coal,Уголь,Вугілля
+FIRE,Fire,Огонь,Вогонь
+CLOUD,Cloud,Облако,Хмара
+STORM_CLOUD,Storm cloud,Штормовое облако,Грозова хмара
+GRAVEL,Gravel,Гравий,Гравій
+BLACK_HOLE,Black hole,Чёрная дыра,Чорна діра
+WOOD,Wood,Дерево,Деревина
+SAW_DAST,Saw dust,Опилки,Тирса
+WEB,Web,Паутина,Павутиння
+LIGHTER,Lighter,Зажигалка,Запальничка
+PLAY,Play,Играть,Грати
+PAUSE,Pause,Пауза,Пауза
+CLEAR,Clear,Очистить,Очистити
