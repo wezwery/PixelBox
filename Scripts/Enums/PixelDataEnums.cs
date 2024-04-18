@@ -99,6 +99,7 @@ public static class PixelDataEnums
         Color = (Color.Color8(218, 109, 66) * ColorOffset).ToMyVector3Byte(),
         Material = PixelData.MaterialEnum.Sand,
         Flamable = true,
+        Replacable = false,
         ChanceToDestroyByFire = 50,
         ChanceToFlame = 50
     };

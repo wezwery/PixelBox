@@ -354,7 +354,19 @@ public static class PixelBoxPhysics
         {
             int xAxis = MyMath.Random<int>(-1, 1);
             Vector2I newPos = new(x, y);
-            if (simulationData.IsValid(x, y + 1) && IsFluid(x, y + 1))
+            if (simulationData.IsValid(x, y + 1) && IsGas(x, y + 1))
+            {
+                simulationData[x, y] = simulationData[x, y + 1];
+                simulationData[x, y + 1] = data;
+                newPos = new(x, y + 1);
+            }
+            else if (simulationData.IsValid(x + xAxis, y + 1) && IsGas(x + xAxis, y + 1))
+            {
+                simulationData[x, y] = simulationData[x + xAxis, y + 1];
+                simulationData[x + xAxis, y + 1] = data;
+                newPos = new(x + xAxis, y + 1);
+            }
+            else if (simulationData.IsValid(x, y + 1) && IsFluid(x, y + 1))
             {
                 simulationData[x, y] = simulationData[x, y + 1];
                 simulationData[x, y + 1] = data;

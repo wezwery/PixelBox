@@ -9,7 +9,7 @@ public partial class MainGameCamera : Camera2D
     public override void _Process(double delta)
     {
         if (MyInput.IsKeyJustPressed(Key.Escape)) GetTree().Quit();
-        if (MyInput.IsKeyJustPressed(Key.F11)) WezweryGodotToolsEngine.ToggleFullscreen();
+        if (MyInput.IsKeyJustPressed(Key.F11)) WezweryGodotToolsEngine.ToggleFullscreen(false);
 
         Position += new Vector2(MyInput.Axis(Key.A, Key.D),
                                 MyInput.Axis(Key.W, Key.S)).Normalized() * ((float)delta * 200f);
