@@ -24,12 +24,12 @@ public partial class MainGame : Node2D
     private MyTimer simulationUpdater;
     private Image simulationImage;
     private ImageTexture simulationTexture;
-    private int radius = 2;
     private int selectedPixelType = 0;
 
     public static MainGame Instance { get; private set; }
 
     public bool Paused = false;
+    public int Radius = 1;
     public Vector2I MousePoint { get; private set; } = new Vector2I();
     public bool IsMousePointValid => SimulationData.IsValid(MousePoint.X, MousePoint.Y);
 
@@ -128,9 +128,9 @@ public partial class MainGame : Node2D
     {
         if (Input.IsActionPressed("LMB"))
         {
-            for (int x = -radius + 1; x < radius; x++)
+            for (int x = -Radius + 1; x < Radius; x++)
             {
-                for (int y = -radius + 1; y < radius; y++)
+                for (int y = -Radius + 1; y < Radius; y++)
                 {
                     int posX = MousePoint.X + x;
                     int posY = MousePoint.Y + y;
@@ -144,9 +144,9 @@ public partial class MainGame : Node2D
         }
         if (Input.IsActionPressed("RMB"))
         {
-            for (int x = -radius + 1; x < radius; x++)
+            for (int x = -Radius + 1; x < Radius; x++)
             {
-                for (int y = -radius + 1; y < radius; y++)
+                for (int y = -Radius + 1; y < Radius; y++)
                 {
                     int posX = MousePoint.X + x;
                     int posY = MousePoint.Y + y;
@@ -198,7 +198,7 @@ public partial class MainGame : Node2D
                 }
                 else
                 {
-                    if (x.Distance(MousePoint.X) < radius && y.Distance(MousePoint.Y) < radius)
+                    if (x.Distance(MousePoint.X) < Radius && y.Distance(MousePoint.Y) < Radius)
                     {
                         simulationImage.SetPixel(x, y, Colors.White);
                     }

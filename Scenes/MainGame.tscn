@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dnuq6278lei6e"]
 
 [ext_resource type="Script" path="res://Scenes/MainGame.cs" id="1_331k3"]
-[ext_resource type="PackedScene" uid="uid://fauedixtx5wr" path="res://WezweryGodotTools/Scenes/FreeCamera2D.tscn" id="2_va2q0"]
+[ext_resource type="Script" path="res://Scenes/MainGameCamera.cs" id="2_lp476"]
 [ext_resource type="Script" path="res://Scenes/UI.cs" id="3_5tmgb"]
 [ext_resource type="PackedScene" uid="uid://edtueommhelq" path="res://Nodes/PixelData.tscn" id="3_ptsef"]
 [ext_resource type="Script" path="res://WezweryGodotTools/MyLabel.cs" id="5_s2ld8"]
@@ -9,7 +9,7 @@
 [node name="MainGame" type="Node2D" node_paths=PackedStringArray("simulation", "camera", "ui")]
 script = ExtResource("1_331k3")
 simulation = NodePath("Simulation")
-camera = NodePath("FreeCamera2D")
+camera = NodePath("Camera2D")
 ui = NodePath("UI")
 SimulationSize = Vector2i(150, 150)
 
@@ -18,10 +18,11 @@ texture_filter = 1
 texture_repeat = 1
 centered = false
 
-[node name="FreeCamera2D" parent="." instance=ExtResource("2_va2q0")]
+[node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(5, 5)
+script = ExtResource("2_lp476")
 
-[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid", "playPauseBtn", "speed0d5x", "speed1x", "speed1d5x", "speed2x", "speed3x", "currentSpeedLabel", "clearBtn")]
+[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid", "playPauseBtn", "speed0d5x", "speed1x", "speed1d5x", "speed2x", "speed3x", "currentSpeedLabel", "clearBtn", "paintSizeLabel", "paintSizeSlider")]
 script = ExtResource("3_5tmgb")
 pixelDataScene = ExtResource("3_ptsef")
 grid = NodePath("Pixels/ScrollContainer/Grid")
@@ -33,6 +34,8 @@ speed2x = NodePath("Settings/Grid/SpeedControl/Speed2x")
 speed3x = NodePath("Settings/Grid/SpeedControl/Speed3x")
 currentSpeedLabel = NodePath("Settings/Grid/SpeedControl/CurrentSpeedLabel")
 clearBtn = NodePath("Settings/Grid/Simulation/ClearBtn")
+paintSizeLabel = NodePath("Settings/Grid/PaintSize/PaintSizeLabel")
+paintSizeSlider = NodePath("Settings/Grid/PaintSize/CenterContainer/PaintSizeSlider")
 
 [node name="Pixels" type="ColorRect" parent="UI"]
 anchors_preset = 12
@@ -42,6 +45,7 @@ anchor_bottom = 1.0
 offset_top = -60.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_force_pass_scroll_events = false
 color = Color(0, 0, 0, 0.196078)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UI/Pixels"]
@@ -60,6 +64,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 31.0
 grow_horizontal = 2
+mouse_force_pass_scroll_events = false
 color = Color(0, 0, 0, 0.196078)
 
 [node name="Grid" type="HBoxContainer" parent="UI/Settings"]
@@ -141,3 +146,31 @@ layout_mode = 2
 focus_mode = 0
 mouse_default_cursor_shape = 2
 text = "CLEAR"
+
+[node name="VSeparator3" type="VSeparator" parent="UI/Settings/Grid"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PaintSize" type="HBoxContainer" parent="UI/Settings/Grid"]
+layout_mode = 2
+
+[node name="PaintSizeLabel" type="Label" parent="UI/Settings/Grid/PaintSize"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "1x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Settings/Grid/PaintSize"]
+layout_mode = 2
+
+[node name="PaintSizeSlider" type="HSlider" parent="UI/Settings/Grid/PaintSize/CenterContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 10
+max_value = 5.0
+scrollable = false
+
+[node name="CenterContainer2" type="CenterContainer" parent="UI/Settings/Grid/PaintSize"]
+layout_mode = 2

@@ -70,34 +70,42 @@ public static class PixelBoxPhysics
                         if (IsReadyToFire(x - 1, y))
                         {
                             simulationData[x - 1, y].Fire = true;
+                            simulationData[x - 1, y].Updated = true;
                         }
                         if (IsReadyToFire(x + 1, y))
                         {
                             simulationData[x + 1, y].Fire = true;
+                            simulationData[x + 1, y].Updated = true;
                         }
                         if (IsReadyToFire(x, y - 1))
                         {
                             simulationData[x, y - 1].Fire = true;
+                            simulationData[x, y - 1].Updated = true;
                         }
                         if (IsReadyToFire(x, y + 1))
                         {
                             simulationData[x, y + 1].Fire = true;
+                            simulationData[x, y + 1].Updated = true;
                         }
                         if (IsReadyToFire(x + 1, y + 1))
                         {
                             simulationData[x + 1, y + 1].Fire = true;
+                            simulationData[x + 1, y + 1].Updated = true;
                         }
                         if (IsReadyToFire(x - 1, y + 1))
                         {
                             simulationData[x - 1, y + 1].Fire = true;
+                            simulationData[x - 1, y + 1].Updated = true;
                         }
                         if (IsReadyToFire(x + 1, y - 1))
                         {
                             simulationData[x + 1, y - 1].Fire = true;
+                            simulationData[x + 1, y - 1].Updated = true;
                         }
                         if (IsReadyToFire(x - 1, y - 1))
                         {
                             simulationData[x - 1, y - 1].Fire = true;
+                            simulationData[x - 1, y - 1].Updated = true;
                         }
                         if (MyMath.RandomPercent <= simulationData[x, y].GetChanceToDestroyByFire())
                         {

@@ -13,6 +13,8 @@ public partial class UI : CanvasLayer
     [Export] private Button speed0d5x, speed1x, speed1d5x, speed2x, speed3x;
     [Export] private Label currentSpeedLabel;
     [Export, ExportCategory("Settings/Simulation")] private Button clearBtn;
+    [Export, ExportCategory("Settings/PaintSize")] private Label paintSizeLabel;
+    [Export] private Slider paintSizeSlider;
 
     public override void _Ready()
     {
@@ -49,6 +51,11 @@ public partial class UI : CanvasLayer
         clearBtn.Connect("pressed", Callable.From(() =>
         {
             MainGame.Instance.Clear();
+        }));
+        paintSizeSlider.Connect("value_changed", Callable.From<float>(x =>
+        {
+            MainGame.Instance.Radius = (int)x + 1;
+            paintSizeLabel.Text = $"{(int)x * 2 + 1}x{(int)x * 2 + 1}";
         }));
     }
 
