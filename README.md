@@ -1,6 +1,10 @@
 # Pixel Box
 Симуляция пикселей на движке [Godot Engine](https://godotengine.org/)
 
-**Внимание! WezweryGodotTools скрипты отсутствуют. Перед сборкой проекта, замените недостающие строки кода.**
+Languages/Языки/Мови:
+- English
+- Русский
+- Українська
+
 ## Картинки
 ![Simulation](Snapshots/Simulation.png)
