@@ -1,10 +1,10 @@
 # Pixel Box
-Симуляция пикселей на движке [Godot Engine](https://godotengine.org/)
+РЎРёРјСѓР»СЏС†РёСЏ РїРёРєСЃРµР»РµР№
 
-Languages/Языки/Мови:
+Languages/РЇР·С‹РєРё/РњРѕРІРё:
 - English
-- Русский
-- Українська
+- Р СѓСЃСЃРєРёР№
+- РЈРєСЂР°С—РЅСЃСЊРєР°
 
-## Картинки
+## РљР°СЂС‚РёРЅРєРё
 ![Simulation](Snapshots/Simulation.png)
