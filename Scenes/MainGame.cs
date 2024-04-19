@@ -183,6 +183,10 @@ public partial class MainGame : Node2D
         {
             MakeScreenshot();
         }
+        if (Input.IsActionJustPressed("NextFrame"))
+        {
+            SimulationData = PixelBoxPhysics.Update(SimulationSize, SimulationData);
+        }
     }
 
     public void Clear()

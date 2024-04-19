@@ -55,7 +55,7 @@ public static class PixelDataEnums
         Material = PixelData.MaterialEnum.Sand,
         Replacable = false,
         Flamable = true,
-        ChanceToDestroyByFire = 3,
+        ChanceToDestroyByFire = 1,
         ChanceToFlame = 10
     };
     public static PixelData FIRE => new(FIRE_ID)
@@ -114,5 +114,14 @@ public static class PixelDataEnums
     {
         Color = Color.Color8(200, 200, 200),
         Material = PixelData.MaterialEnum.Static
+    };
+    public static PixelData FUEL => new(FUEL_ID)
+    {
+        Color = Color.Color8(161, 102, 8) * ColorOffset,
+        Material = PixelData.MaterialEnum.Fluid,
+        Flamable = true,
+        Replacable = false,
+        ChanceToDestroyByFire = 1,
+        ChanceToFlame = 100
     };
 }

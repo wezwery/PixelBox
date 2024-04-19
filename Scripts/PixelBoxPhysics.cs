@@ -53,72 +53,12 @@ public static class PixelBoxPhysics
                 if (data.HasPixel() == false || data.Updated) continue;
                 data.Updated = true;
                 simulationData[x, y] = default;
-                if (data.Fire)
-                {
-                    if (IsValidAndEmpty(x, y - 1))
-                    {
-                        simulationData[x, y - 1] = FIRE;
-                        simulationData[x, y - 1].Updated = true;
-                    }
-                    if (IsSupportedForFire(x, y) == false)
-                    {
-                        data.Fire = false;
-                    }
-                    else
-                    {
-                        simulationData[x, y] = data;
-                        if (IsReadyToFire(x - 1, y))
-                        {
-                            simulationData[x - 1, y].Fire = true;
-                            simulationData[x - 1, y].Updated = true;
-                        }
-                        if (IsReadyToFire(x + 1, y))
-                        {
-                            simulationData[x + 1, y].Fire = true;
-                            simulationData[x + 1, y].Updated = true;
-                        }
-                        if (IsReadyToFire(x, y - 1))
-                        {
-                            simulationData[x, y - 1].Fire = true;
-                            simulationData[x, y - 1].Updated = true;
-                        }
-                        if (IsReadyToFire(x, y + 1))
-                        {
-                            simulationData[x, y + 1].Fire = true;
-                            simulationData[x, y + 1].Updated = true;
-                        }
-                        if (IsReadyToFire(x + 1, y + 1))
-                        {
-                            simulationData[x + 1, y + 1].Fire = true;
-                            simulationData[x + 1, y + 1].Updated = true;
-                        }
-                        if (IsReadyToFire(x - 1, y + 1))
-                        {
-                            simulationData[x - 1, y + 1].Fire = true;
-                            simulationData[x - 1, y + 1].Updated = true;
-                        }
-                        if (IsReadyToFire(x + 1, y - 1))
-                        {
-                            simulationData[x + 1, y - 1].Fire = true;
-                            simulationData[x + 1, y - 1].Updated = true;
-                        }
-                        if (IsReadyToFire(x - 1, y - 1))
-                        {
-                            simulationData[x - 1, y - 1].Fire = true;
-                            simulationData[x - 1, y - 1].Updated = true;
-                        }
-                        if (MyMath.RandomPercent <= simulationData[x, y].GetChanceToDestroyByFire())
-                        {
-                            if (data.ID == WOOD_ID) simulationData[x, y] = SMOKE;
-                            else simulationData[x, y] = default;
-                            continue;
-                        }
-                    }
-                }
+                Vector2I newPos = new(x, y);
                 switch (data.Material)
                 {
                     case PixelData.MaterialEnum.Static:
                         {
+                            #region Структура
                             simulationData[x, y] = data;
                             switch (data.ID)
                             {
@@ -173,21 +113,27 @@ public static class PixelBoxPhysics
                                         break;
                                     }
                             }
+                            #endregion
                             break;
                         }
                     case PixelData.MaterialEnum.Sand:
                         {
-                            var newPos = SandSimulation(simulationData, x, y, data);
+                            #region Песок
+                            newPos = SandSimulation(simulationData, x, y, data);
+                            #endregion
                             break;
                         }
                     case PixelData.MaterialEnum.HardSand:
                         {
-                            var newPos = HardSandSimulation(simulationData, x, y, data);
+                            #region Тяжелый песок
+                            newPos = HardSandSimulation(simulationData, x, y, data);
+                            #endregion
                             break;
                         }
                     case PixelData.MaterialEnum.Gas:
                         {
-                            var newPos = GasSimulation(simulationData, x, y, data);
+                            #region Газы
+                            newPos = GasSimulation(simulationData, x, y, data);
                             switch (data.ID)
                             {
                                 case STEAM_ID:
@@ -229,22 +175,27 @@ public static class PixelBoxPhysics
                                         if (IsReadyToFire(newPos.X - 1, newPos.Y))
                                         {
                                             simulationData[newPos.X - 1, newPos.Y].Fire = true;
+                                            simulationData[newPos.X - 1, newPos.Y].Updated = true;
                                         }
                                         if (IsReadyToFire(newPos.X + 1, newPos.Y))
                                         {
                                             simulationData[newPos.X + 1, newPos.Y].Fire = true;
+                                            simulationData[newPos.X + 1, newPos.Y].Updated = true;
                                         }
                                         if (IsReadyToFire(newPos.X, newPos.Y - 1))
                                         {
                                             simulationData[newPos.X, newPos.Y - 1].Fire = true;
+                                            simulationData[newPos.X, newPos.Y - 1].Updated = true;
                                         }
                                         if (IsReadyToFire(newPos.X, newPos.Y + 1))
                                         {
                                             simulationData[newPos.X, newPos.Y + 1].Fire = true;
+                                            simulationData[newPos.X, newPos.Y + 1].Updated = true;
                                         }
                                         if (MyMath.RandomPercent <= smoke_chance && IsValidAndEmpty(newPos.X, newPos.Y - 1))
                                         {
                                             simulationData[newPos.X, newPos.Y - 1] = SMOKE;
+                                            simulationData[newPos.X, newPos.Y - 1].Updated = true;
                                         }
                                         if (MyMath.RandomPercent <= 30f)
                                         {
@@ -253,11 +204,13 @@ public static class PixelBoxPhysics
                                         break;
                                     }
                             }
+                            #endregion
                             break;
                         }
                     case PixelData.MaterialEnum.Fluid:
                         {
-                            var newPos = FluidSimulation(simulationData, x, y, data);
+                            #region Жидкости
+                            newPos = FluidSimulation(simulationData, x, y, data);
                             switch (data.ID)
                             {
                                 case ACID_ID:
@@ -274,14 +227,80 @@ public static class PixelBoxPhysics
                                         break;
                                     }
                             }
+                            #endregion
                             break;
                         }
                 }
+                #region Механика горящих пикселей
+                if (simulationData[newPos.X, newPos.Y] == data && data.Fire)
+                {
+                    if (IsValidAndEmpty(newPos.X, newPos.Y - 1))
+                    {
+                        simulationData[newPos.X, newPos.Y - 1] = FIRE;
+                        simulationData[newPos.X, newPos.Y - 1].Updated = true;
+                    }
+                    if (IsSupportedForFire(newPos.X, newPos.Y) == false)
+                    {
+                        data.Fire = false;
+                    }
+                    else
+                    {
+                        if (IsReadyToFire(newPos.X - 1, newPos.Y))
+                        {
+                            simulationData[newPos.X - 1, newPos.Y].Fire = true;
+                            simulationData[newPos.X - 1, newPos.Y].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X + 1, newPos.Y))
+                        {
+                            simulationData[newPos.X + 1, newPos.Y].Fire = true;
+                            simulationData[newPos.X + 1, newPos.Y].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X, newPos.Y - 1))
+                        {
+                            simulationData[newPos.X, newPos.Y - 1].Fire = true;
+                            simulationData[newPos.X, newPos.Y - 1].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X, newPos.Y + 1))
+                        {
+                            simulationData[newPos.X, newPos.Y + 1].Fire = true;
+                            simulationData[newPos.X, newPos.Y + 1].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X + 1, newPos.Y + 1))
+                        {
+                            simulationData[newPos.X + 1, newPos.Y + 1].Fire = true;
+                            simulationData[newPos.X + 1, newPos.Y + 1].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X - 1, newPos.Y + 1))
+                        {
+                            simulationData[newPos.X - 1, newPos.Y + 1].Fire = true;
+                            simulationData[newPos.X - 1, newPos.Y + 1].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X + 1, newPos.Y - 1))
+                        {
+                            simulationData[newPos.X + 1, newPos.Y - 1].Fire = true;
+                            simulationData[newPos.X + 1, newPos.Y - 1].Updated = true;
+                        }
+                        if (IsReadyToFire(newPos.X - 1, newPos.Y - 1))
+                        {
+                            simulationData[newPos.X - 1, newPos.Y - 1].Fire = true;
+                            simulationData[newPos.X - 1, newPos.Y - 1].Updated = true;
+                        }
+                        if (MyMath.RandomPercent <= simulationData[newPos.X, newPos.Y].GetChanceToDestroyByFire())
+                        {
+                            if (data.ID == WOOD_ID) simulationData[newPos.X, newPos.Y] = COAL with { Fire = true };
+                            else simulationData[newPos.X, newPos.Y] = default;
+                            continue;
+                        }
+                    }
+                    simulationData[newPos.X, newPos.Y] = data;
+                }
+                #endregion
             }
         }
 
         return simulationData;
 
+        #region Симуляции
         Vector2I FluidSimulation(PixelData[,] simulationData, int x, int y, PixelData data)
         {
             int xAxis = MyMath.Random<int>(-1, 1);
@@ -416,5 +435,6 @@ public static class PixelBoxPhysics
 
             return newPos;
         }
+        #endregion
     }
 }

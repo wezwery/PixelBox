@@ -18,4 +18,5 @@ public static class PixelDataIDs
     public const byte SAW_DAST_ID = 14;
     public const byte WEB_ID = 15;
     public const byte LIGHTER_ID = 16;
+    public const byte FUEL_ID = 17;
 }

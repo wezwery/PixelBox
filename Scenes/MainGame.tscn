@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dnuq6278lei6e"]
+[gd_scene load_steps=5 format=3 uid="uid://dnuq6278lei6e"]
 
 [ext_resource type="Script" path="res://Scenes/MainGame.cs" id="1_331k3"]
 [ext_resource type="Script" path="res://Scenes/MainGameCamera.cs" id="2_lp476"]
 [ext_resource type="Script" path="res://Scenes/UI.cs" id="3_5tmgb"]
 [ext_resource type="PackedScene" uid="uid://edtueommhelq" path="res://Nodes/PixelData.tscn" id="3_ptsef"]
-[ext_resource type="Script" path="res://WezweryGodotTools/MyLabel.cs" id="5_s2ld8"]
 
 [node name="MainGame" type="Node2D" node_paths=PackedStringArray("simulation", "camera", "ui")]
 script = ExtResource("1_331k3")
@@ -85,9 +84,11 @@ theme_override_constants/separation = 10
 layout_mode = 2
 
 [node name="CurrentSpeedLabel" type="Label" parent="UI/Settings/Grid/SpeedControl"]
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "1x"
-script = ExtResource("5_s2ld8")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="UI/Settings/Grid/SpeedControl"]
 modulate = Color(1, 1, 1, 0)
@@ -150,6 +151,8 @@ text = "CLEAR"
 
 [node name="ScreenshotBtn" type="Button" parent="UI/Settings/Grid/Simulation"]
 layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
 text = "SCREENSHOT"
 
 [node name="VSeparator3" type="VSeparator" parent="UI/Settings/Grid"]
