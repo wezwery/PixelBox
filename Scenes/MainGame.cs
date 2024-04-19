@@ -1,6 +1,8 @@
 using Godot;
 using PixelBox.Scripts;
 using PixelBox.Scripts.Enums;
+using System.IO;
+using System.Linq;
 using WezweryGodotTools;
 using WezweryGodotTools.Extensions;
 
@@ -27,6 +29,8 @@ public partial class MainGame : Node2D
     private int selectedPixelType = 0;
 
     public static MainGame Instance { get; private set; }
+
+    public static string PathToScreenshotFolder = $"{OS.GetExecutablePath().GetBaseDir()}/Screenshots/";
 
     public bool Paused = false;
     public int Radius = 1;
@@ -124,6 +128,19 @@ public partial class MainGame : Node2D
         simulationUpdater.WaitTime = 1f / ticksPerSecond / speed;
     }
 
+    public void MakeScreenshot()
+    {
+        if (OS.HasFeature("editor"))
+        {
+            $"Failed to make screenshot! (No editor!)".LogError();
+            return;
+        }
+        if (Directory.Exists(PathToScreenshotFolder) == false) Directory.CreateDirectory(PathToScreenshotFolder);
+        var index = Directory.EnumerateFiles(PathToScreenshotFolder).Count();
+        var err = simulationImage.SavePng($"{PathToScreenshotFolder}{index}.png");
+        if (err > 0) $"Failed to make screenshot! ({err})".LogError();
+    }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (Input.IsActionPressed("LMB"))
@@ -162,6 +179,10 @@ public partial class MainGame : Node2D
             Paused = !Paused;
             ui.UpdatePauseIcon();
         }
+        if (Input.IsActionJustPressed("MakeScreenshot"))
+        {
+            MakeScreenshot();
+        }
     }
 
     public void Clear()
@@ -193,7 +214,7 @@ public partial class MainGame : Node2D
                 PixelData data = SimulationData[x, y];
                 if (data.HasPixel())
                 {
-                    Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) : data.Color.ToColor();
+                    Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) : data.Color;
                     simulationImage.SetPixel(x, y, color);
                 }
                 else

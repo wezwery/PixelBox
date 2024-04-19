@@ -22,7 +22,7 @@ centered = false
 zoom = Vector2(5, 5)
 script = ExtResource("2_lp476")
 
-[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid", "playPauseBtn", "speed0d5x", "speed1x", "speed1d5x", "speed2x", "speed3x", "currentSpeedLabel", "clearBtn", "paintSizeLabel", "paintSizeSlider")]
+[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid", "playPauseBtn", "speed0d5x", "speed1x", "speed1d5x", "speed2x", "speed3x", "currentSpeedLabel", "clearBtn", "screenshotBtn", "paintSizeLabel", "paintSizeSlider")]
 script = ExtResource("3_5tmgb")
 pixelDataScene = ExtResource("3_ptsef")
 grid = NodePath("Pixels/ScrollContainer/Grid")
@@ -34,6 +34,7 @@ speed2x = NodePath("Settings/Grid/SpeedControl/Speed2x")
 speed3x = NodePath("Settings/Grid/SpeedControl/Speed3x")
 currentSpeedLabel = NodePath("Settings/Grid/SpeedControl/CurrentSpeedLabel")
 clearBtn = NodePath("Settings/Grid/Simulation/ClearBtn")
+screenshotBtn = NodePath("Settings/Grid/Simulation/ScreenshotBtn")
 paintSizeLabel = NodePath("Settings/Grid/PaintSize/PaintSizeLabel")
 paintSizeSlider = NodePath("Settings/Grid/PaintSize/CenterContainer/PaintSizeSlider")
 
@@ -146,6 +147,10 @@ layout_mode = 2
 focus_mode = 0
 mouse_default_cursor_shape = 2
 text = "CLEAR"
+
+[node name="ScreenshotBtn" type="Button" parent="UI/Settings/Grid/Simulation"]
+layout_mode = 2
+text = "SCREENSHOT"
 
 [node name="VSeparator3" type="VSeparator" parent="UI/Settings/Grid"]
 modulate = Color(1, 1, 1, 0)

@@ -1,4 +1,4 @@
-using WezweryGodotTools;
+using Godot;
 
 namespace PixelBox.Scripts;
 
@@ -11,7 +11,7 @@ public struct PixelData
 
     public byte ID;
     public MaterialEnum Material;
-    public MyVector3<byte> Color;
+    public Color Color;
     public bool Updated;
     public bool Fire;
     public bool Flamable;

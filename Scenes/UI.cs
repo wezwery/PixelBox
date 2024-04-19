@@ -1,6 +1,5 @@
 using Godot;
 using PixelBox.Scripts.Enums;
-using WezweryGodotTools.Extensions;
 
 namespace PixelBox.Scenes;
 
@@ -13,6 +12,7 @@ public partial class UI : CanvasLayer
     [Export] private Button speed0d5x, speed1x, speed1d5x, speed2x, speed3x;
     [Export] private Label currentSpeedLabel;
     [Export, ExportCategory("Settings/Simulation")] private Button clearBtn;
+    [Export] private Button screenshotBtn;
     [Export, ExportCategory("Settings/PaintSize")] private Label paintSizeLabel;
     [Export] private Slider paintSizeSlider;
 
@@ -56,6 +56,10 @@ public partial class UI : CanvasLayer
         {
             MainGame.Instance.Radius = (int)x + 1;
             paintSizeLabel.Text = $"{(int)x * 2 + 1}x{(int)x * 2 + 1}";
+        }));
+        screenshotBtn.Connect("pressed", Callable.From(() =>
+        {
+            MainGame.Instance.MakeScreenshot();
         }));
     }
 
@@ -104,7 +108,7 @@ public partial class UI : CanvasLayer
             {
                 MainGame.Instance.SetSelectedPixelType(index);
             }));
-            ins.GetNode<ColorRect>("BG/Selected").Color = item.Color.ToColor();
+            ins.GetNode<ColorRect>("BG/Selected").Color = item.Color;
             ins.GetNode<Label>("BG/Label").Text = Tr(PixelDataEnums.Names[i]);
             grid.AddChild(ins);
         }
