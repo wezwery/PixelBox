@@ -5,17 +5,12 @@
 [ext_resource type="Script" path="res://Scenes/UI.cs" id="3_5tmgb"]
 [ext_resource type="PackedScene" uid="uid://edtueommhelq" path="res://Nodes/PixelData.tscn" id="3_ptsef"]
 
-[node name="MainGame" type="Node2D" node_paths=PackedStringArray("simulation", "camera", "ui")]
+[node name="MainGame" type="Node2D" node_paths=PackedStringArray("camera", "ui")]
 script = ExtResource("1_331k3")
-simulation = NodePath("Simulation")
 camera = NodePath("Camera2D")
 ui = NodePath("UI")
-SimulationSize = Vector2i(150, 150)
-
-[node name="Simulation" type="Sprite2D" parent="."]
-texture_filter = 1
-texture_repeat = 1
-centered = false
+SimulationSize = Vector2i(512, 128)
+ChunksCount = Vector2i(16, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(5, 5)
