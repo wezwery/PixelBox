@@ -1,0 +1,153 @@
+﻿root = true
+
+[*.cs]
+
+charset: utf-8
+
+# IDE0005: Директива using не нужна.
+dotnet_diagnostic.IDE0005.severity = error
+
+# IDE0001: Упрощение имен
+dotnet_diagnostic.IDE0001.severity = error
+
+# CA1822: Пометьте члены как статические
+dotnet_diagnostic.CA1822.severity = error
+
+# CA1050: Объявите типы в пространствах имен
+dotnet_diagnostic.CA1050.severity = error
+
+# IDE0040: Добавить модификаторы доступа
+dotnet_diagnostic.IDE0040.severity = error
+
+# IDE0040: Добавить модификаторы доступа
+dotnet_style_require_accessibility_modifiers = always
+
+# IDE0055: Исправить Форматирование
+dotnet_diagnostic.IDE0055.severity = error
+
+# IDE0251: Элемент можно сделать readonly
+dotnet_diagnostic.IDE0251.severity = error
+
+# IDE0003: Удалить квалификацию
+dotnet_diagnostic.IDE0003.severity = error
+
+# IDE0044: Сделать поле доступным только для чтения
+dotnet_diagnostic.IDE0044.severity = error
+
+# CA1825: Нежелательность выделения массивов нулевой длины
+dotnet_diagnostic.CA1825.severity = error
+
+# CA1806: Не игнорируйте результаты метода
+dotnet_diagnostic.CA1806.severity = error
+
+# IDE0049: Упрощение имен
+dotnet_diagnostic.IDE0049.severity = error
+
+# IDE0002: Упрощение доступа для членов
+dotnet_diagnostic.IDE0002.severity = error
+
+# IDE0051: Удалите неиспользуемые закрытые члены
+dotnet_diagnostic.IDE0051.severity = error
+
+# IDE0052: Удалить непрочитанные закрытые члены
+dotnet_diagnostic.IDE0052.severity = error
+
+#### Стили именования ####
+
+# Правила именования
+
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = error
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+
+dotnet_naming_rule.types_should_be_pascal_case.severity = error
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = error
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.public_or_protected_field_should_be_pascal_case.severity = error
+dotnet_naming_rule.public_or_protected_field_should_be_pascal_case.symbols = public_or_protected_field
+dotnet_naming_rule.public_or_protected_field_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.private_or_internal_field_should_be_начинать_с_строчной.severity = error
+dotnet_naming_rule.private_or_internal_field_should_be_начинать_с_строчной.symbols = private_or_internal_field
+dotnet_naming_rule.private_or_internal_field_should_be_начинать_с_строчной.style = начинать_с_строчной
+
+# Спецификации символов
+
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.interface.required_modifiers = 
+
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.types.required_modifiers = 
+
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
+dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_field_members.required_modifiers = 
+
+dotnet_naming_symbols.public_or_protected_field.applicable_kinds = field
+dotnet_naming_symbols.public_or_protected_field.applicable_accessibilities = public, protected
+dotnet_naming_symbols.public_or_protected_field.required_modifiers = 
+
+dotnet_naming_symbols.private_or_internal_field.applicable_kinds = field
+dotnet_naming_symbols.private_or_internal_field.applicable_accessibilities = internal, private, private_protected
+dotnet_naming_symbols.private_or_internal_field.required_modifiers = 
+
+# Стили именования
+
+dotnet_naming_style.begins_with_i.required_prefix = I
+dotnet_naming_style.begins_with_i.required_suffix = 
+dotnet_naming_style.begins_with_i.word_separator = 
+dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.начинать_с_строчной.required_prefix = 
+dotnet_naming_style.начинать_с_строчной.required_suffix = 
+dotnet_naming_style.начинать_с_строчной.word_separator = 
+dotnet_naming_style.начинать_с_строчной.capitalization = camel_case
+csharp_style_throw_expression = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_prefer_simple_default_expression = true:error
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_space_around_binary_operators = before_and_after
+csharp_indent_labels = one_less_than_current
+
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
+end_of_line = crlf
