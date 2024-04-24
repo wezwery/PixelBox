@@ -26,7 +26,7 @@ public partial class MainGame : Node2D
     [Export] public Vector2I ChunksCount = new(3, 3);
 
     private Sprite2D[,] chunks;
-    public int[,] PixelsInChunks;
+    public bool[,] RequestToUpdates;
 
     private MyTimer simulationUpdater;
     private Image[,] simulationImages;
@@ -36,7 +36,7 @@ public partial class MainGame : Node2D
 
     public static MainGame Instance { get; private set; }
 
-    public static string PathToScreenshotFolder = $"{OS.GetExecutablePath().GetBaseDir()}/Screenshots/";
+    public readonly static string PathToScreenshotFolder = $"{OS.GetExecutablePath().GetBaseDir()}/Screenshots/";
 
     public bool Paused = false;
     public int Radius = 1;
@@ -79,7 +79,7 @@ public partial class MainGame : Node2D
         if (ChunksCount.Y == 0) ChunksCount.Y = 1;
         SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
         chunks = new Sprite2D[ChunksCount.X, ChunksCount.Y];
-        PixelsInChunks = new int[ChunksCount.X, ChunksCount.Y];
+        RequestToUpdates = new bool[ChunksCount.X, ChunksCount.Y];
         simulationImages = new Image[ChunksCount.X, ChunksCount.Y];
         simulationTextures = new ImageTexture[ChunksCount.X, ChunksCount.Y];
         ChunkRects = new Rect2I[ChunksCount.X, ChunksCount.Y];
@@ -131,13 +131,33 @@ public partial class MainGame : Node2D
 
     private void UpdateChunks()
     {
+        bool[,] chunksToUpdate = new bool[ChunksCount.X, ChunksCount.Y];
+
         for (int x = 0; x < ChunksCount.X; x++)
         {
             for (int y = 0; y < ChunksCount.Y; y++)
             {
-                bool pointer = PixelBoxPhysics.GetChunkByPoint(MousePoint).Distance(new(x, y)) > 0.5f;
-                if (PixelsInChunks[x, y] > 0) SimulationData = PixelBoxPhysics.Update(x, y);
-                else if (pointer) continue;
+                chunksToUpdate[x, y] = RequestToUpdates[x, y];
+            }
+        }
+
+        for (int x = 0; x < SimulationSize.X; x++)
+        {
+            for (int y = 0; y < SimulationSize.Y; y++)
+            {
+                if (SimulationData[x, y].HasPixel() == false) continue;
+                SimulationData[x, y].Updated = false;
+            }
+        }
+
+        for (int x = 0; x < ChunksCount.X; x++)
+        {
+            for (int y = 0; y < ChunksCount.Y; y++)
+            {
+                //bool pointer = PixelBoxPhysics.GetChunkByPoint(MousePoint).Distance(new(x, y)) > 0.5f;
+                if (chunksToUpdate[x, y] == false) continue;
+                RequestToUpdates[x, y] = false;
+                SimulationData = PixelBoxPhysics.Update(x, y);
                 var bounds = ChunkRects[x, y];
                 for (int xx = 0; xx < bounds.Size.X; xx++)
                 {
@@ -151,14 +171,16 @@ public partial class MainGame : Node2D
                         }
                         else
                         {
-                            if ((bounds.Position.X + xx).Distance(MousePoint.X) < Radius && (bounds.Position.Y + yy).Distance(MousePoint.Y) < Radius)
-                            {
-                                simulationImages[x, y].SetPixel(xx, yy, Colors.White);
-                            }
-                            else
-                            {
-                                simulationImages[x, y].SetPixel(xx, yy, bg_color);
-                            }
+                            // Покрас пустых пикселей в белый под размер кисти
+                            //if ((bounds.Position.X + xx).Distance(MousePoint.X) < Radius && (bounds.Position.Y + yy).Distance(MousePoint.Y) < Radius)
+                            //{
+                            //    simulationImages[x, y].SetPixel(xx, yy, Colors.White);
+                            //}
+                            //else
+                            //{
+                            //    simulationImages[x, y].SetPixel(xx, yy, bg_color);
+                            //}
+                            simulationImages[x, y].SetPixel(xx, yy, bg_color);
                         }
                     }
                 }
@@ -194,7 +216,6 @@ public partial class MainGame : Node2D
         Debugger.DisplayText($"Chunks: {ChunksCount.X}x{ChunksCount.Y} ({ChunksCount.X * ChunksCount.Y})"); // CHUNKS
         Vector2I chunkIndex = PixelBoxPhysics.GetChunkByPoint(MousePoint);
         Debugger.DisplayText($"Pointer Chunk: {chunkIndex}"); // MOUSE POINT CHUNK
-        Debugger.DisplayText($"Pointer Pixels In Chunk: {(PixelsInChunks.IsValid(chunkIndex.X, chunkIndex.Y) ? PixelsInChunks[chunkIndex.X, chunkIndex.Y] : -1)}"); // MOUSE POINT PIXELS IN CHUNK
 
         if (IsMousePointValid)
         {
@@ -242,6 +263,22 @@ public partial class MainGame : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        // Обновление чанка и всех соседних чанков для каждого пикселя кисти
+        //if (@event is InputEventMouseMotion && IsMousePointValid)
+        //{
+        //    for (int x = -Radius + 1; x < Radius; x++)
+        //    {
+        //        for (int y = -Radius + 1; y < Radius; y++)
+        //        {
+        //            var chunk = PixelBoxPhysics.GetChunkByPoint(MousePoint + new Vector2I(x, y));
+        //            foreach (var item in MyMath.IAxis4)
+        //            {
+        //                if (RequestToUpdates.IsValid(chunk.X + item.X, chunk.Y + item.Y)) PixelBoxPhysics.SetRequestToUpdate(chunk.X + item.X, chunk.Y + item.Y);
+        //            }
+        //            if (RequestToUpdates.IsValid(chunk.X, chunk.Y)) PixelBoxPhysics.SetRequestToUpdate(chunk.X, chunk.Y);
+        //        }
+        //    }
+        //}
         if (Input.IsActionPressed("LMB"))
         {
             for (int x = -Radius + 1; x < Radius; x++)
@@ -282,16 +319,16 @@ public partial class MainGame : Node2D
         {
             MakeScreenshot();
         }
-        if (Input.IsActionJustPressed("NextFrame"))
-        {
-            UpdateChunks();
-        }
+        //if (Input.IsActionJustPressed("NextFrame"))
+        //{
+        //    UpdateChunks(true);
+        //}
     }
 
     public void Clear()
     {
         SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
-        PixelsInChunks = new int[ChunksCount.X, ChunksCount.Y];
+        RequestToUpdates = new bool[ChunksCount.X, ChunksCount.Y];
         for (int x = 0; x < ChunksCount.X; x++)
         {
             for (int y = 0; y < ChunksCount.Y; y++)

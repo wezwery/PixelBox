@@ -10,7 +10,7 @@ script = ExtResource("1_331k3")
 camera = NodePath("Camera2D")
 ui = NodePath("UI")
 SimulationSize = Vector2i(512, 128)
-ChunksCount = Vector2i(16, 1)
+ChunksCount = Vector2i(16, 16)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(5, 5)

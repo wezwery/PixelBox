@@ -22,6 +22,11 @@ public static class PixelBoxPhysics
         }
     }
 
+    public static void SetRequestToUpdate(int x, int y)
+    {
+        MainGame.Instance.RequestToUpdates[x, y] = true;
+    }
+
     public static void SetFire(Vector2I pos, bool fire)
     {
         MainGame.Instance.SimulationData[pos.X, pos.Y].Fire = fire;
@@ -41,13 +46,19 @@ public static class PixelBoxPhysics
         }
         return new(x == 0 ? x : x - 1, y == 0 ? y : y - 1);
     }
-    public static void SetPixel(Vector2I pos, PixelData data)
+    public static void SetPixel(Vector2I pos, PixelData data, bool requestToUpdate = true)
     {
-        var pixelsInChunks = MainGame.Instance.PixelsInChunks;
         var simulationData = MainGame.Instance.SimulationData;
         var index = GetChunkByPoint(pos);
+        if (requestToUpdate)
+        {
+            foreach (var item in MyMath.IAxis4)
+            {
+                if (MainGame.Instance.RequestToUpdates.IsValid(index.X + item.X, index.Y + item.Y)) SetRequestToUpdate(index.X + item.X, index.Y + item.Y);
+            }
+            SetRequestToUpdate(index.X, index.Y);
+        }
         var empty = data == default;
-        if ((empty && simulationData[pos.X, pos.Y] != default) || (empty == false && simulationData[pos.X, pos.Y] == default)) pixelsInChunks[index.X, index.Y] += empty ? -1 : 1;
         simulationData[pos.X, pos.Y] = data;
         if (empty == false)
         {
@@ -59,18 +70,19 @@ public static class PixelBoxPhysics
     {
         var bounds = MainGame.Instance.ChunkRects[chunkX, chunkY];
         var simulationData = MainGame.Instance.SimulationData;
-        for (int x = bounds.Position.X; x < bounds.End.X; x++)
-        {
-            for (int y = bounds.Position.Y; y < bounds.End.Y; y++)
-            {
-                if (simulationData[x, y].HasPixel() == false) continue;
-                simulationData[x, y].Updated = false;
-            }
-        }
+        // ПЕРЕМЕЩЕНО В MainGame.UpdateChunks()
+        //for (int x = bounds.Position.X; x < bounds.End.X; x++)
+        //{
+        //    for (int y = bounds.Position.Y; y < bounds.End.Y; y++)
+        //    {
+        //        if (simulationData[x, y].HasPixel() == false) continue;
+        //        simulationData[x, y].Updated = false;
+        //    }
+        //}
 
         bool IsValid(int x, int y) => simulationData.IsValid(x, y);
-        bool HasPixel(int x, int y) => IsValid(x, y) && simulationData[x, y].HasPixel();
-        bool IsFireOrSmokeOrNone(int x, int y) => IsValid(x, y) && (HasPixel(x, y) == false || simulationData[x, y].ID == FIRE_ID || simulationData[x, y].ID == SMOKE_ID);
+        bool HasPixel(int x, int y) => simulationData[x, y].HasPixel();
+        bool IsFireOrSmokeOrNone(int x, int y) => (HasPixel(x, y) == false || simulationData[x, y].ID == FIRE_ID || simulationData[x, y].ID == SMOKE_ID);
         bool IsFluid(int x, int y) => HasPixel(x, y) && (simulationData[x, y].Material == PixelData.MaterialEnum.Fluid);
         bool IsGas(int x, int y) => HasPixel(x, y) && simulationData[x, y].Material == PixelData.MaterialEnum.Gas;
         bool IsAcidDestroyable(int x, int y) => HasPixel(x, y) && (simulationData[x, y].Material == PixelData.MaterialEnum.Static || simulationData[x, y].Material == PixelData.MaterialEnum.Sand || simulationData[x, y].Material == PixelData.MaterialEnum.HardSand);
@@ -78,29 +90,30 @@ public static class PixelBoxPhysics
         bool IsSupportedForFire(int x, int y) => IsFireOrSmokeOrNone(x - 1, y) || IsFireOrSmokeOrNone(x + 1, y) || IsFireOrSmokeOrNone(x, y - 1) || IsFireOrSmokeOrNone(x, y + 1);
         bool IsReadyToFire(int x, int y) => HasPixel(x, y) && simulationData[x, y].Flamable && MyMath.RandomPercent <= simulationData[x, y].GetChanceToFlame() && IsSupportedForFire(x, y);
         //bool IsUpdated(int x, int y) => HasPixel(x, y) && simulationData[x, y].Updated;
-        bool IsValidAndEmpty(int x, int y) => IsValid(x, y) && HasPixel(x, y) == false;
+        bool IsEmpty(int x, int y) => HasPixel(x, y) == false;
         bool IsPixel(int x, int y, byte id) => HasPixel(x, y) && simulationData[x, y].ID == id;
 
-        for (int x = bounds.Position.X; x < bounds.End.X; x++)
+        for (int x = bounds.Position.X; x < bounds.End.X + 1; x++)
         {
-            for (int y = bounds.Position.Y; y < bounds.End.Y; y++)
+            for (int y = bounds.Position.Y; y < bounds.End.Y + 1; y++)
             {
+                if (IsValid(x, y) == false) continue;
                 PixelData data = simulationData[x, y];
                 if (data.HasPixel() == false || data.Updated) continue;
                 data.Updated = true;
-                SetPixel(new(x, y), default);
+                //SetPixel(new(x, y), default);
                 Vector2I newPos = new(x, y);
                 switch (data.Material)
                 {
                     case PixelData.MaterialEnum.Static:
                         {
                             #region Структура
-                            SetPixel(new(x, y), data);
+                            SetPixel(new(x, y), data, false);
                             switch (data.ID)
                             {
                                 case CLOUD_ID:
                                     {
-                                        if (MyMath.RandomPercent <= 1f && IsValidAndEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 1f && IsEmpty(x, y + 1))
                                         {
                                             SetPixel(new(x, y + 1), WATER);
                                         }
@@ -108,11 +121,11 @@ public static class PixelBoxPhysics
                                     }
                                 case STORM_CLOUD_ID:
                                     {
-                                        if (MyMath.RandomPercent <= 10f && IsValidAndEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 10f && IsEmpty(x, y + 1))
                                         {
                                             SetPixel(new(x, y + 1), WATER);
                                         }
-                                        if (MyMath.RandomPercent <= 0.1f && IsValidAndEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 0.1f && IsEmpty(x, y + 1))
                                         {
                                             SetRayPixels(FIRE, new(x, y + 1), new(MyMath.Random(-0.5f, 0.5f), 1f), MyMath.Random(50, 1000), simulationData);
                                         }
@@ -140,7 +153,7 @@ public static class PixelBoxPhysics
                                     }
                                 case LIGHTER_ID:
                                     {
-                                        if (IsValidAndEmpty(x, y - 1))
+                                        if (IsEmpty(x, y - 1))
                                         {
                                             SetPixel(new(x, y - 1), FIRE);
                                         }
@@ -217,7 +230,7 @@ public static class PixelBoxPhysics
                                         {
                                             SetFire(new(newPos.X, newPos.Y + 1), true);
                                         }
-                                        if (MyMath.RandomPercent <= smoke_chance && IsValidAndEmpty(newPos.X, newPos.Y - 1))
+                                        if (MyMath.RandomPercent <= smoke_chance && IsEmpty(newPos.X, newPos.Y - 1))
                                         {
                                             SetPixel(new(newPos.X, newPos.Y - 1), SMOKE);
                                         }
@@ -258,7 +271,7 @@ public static class PixelBoxPhysics
                 #region Механика горящих пикселей
                 if (simulationData[newPos.X, newPos.Y] == data && data.Fire)
                 {
-                    if (IsValidAndEmpty(newPos.X, newPos.Y - 1))
+                    if (IsEmpty(newPos.X, newPos.Y - 1))
                     {
                         SetPixel(new(newPos.X, newPos.Y - 1), FIRE);
                     }
@@ -328,11 +341,13 @@ public static class PixelBoxPhysics
             if (simulationData.IsValid(x, y + 1) && HasPixel(x, y + 1) == false)
             {
                 SetPixel(new(x, y + 1), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x, y + 1);
             }
             else if (simulationData.IsValid(x + xAxis, y + 1) && HasPixel(x + xAxis, y + 1) == false)
             {
                 SetPixel(new(x + xAxis, y + 1), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x + xAxis, y + 1);
             }
             else if (needSwap && swapAxis.Any() && simulationData.IsValid(x + swapAxis.X, y + swapAxis.Y) && IsFluid(x + swapAxis.X, y + swapAxis.Y) && simulationData[x + swapAxis.X, y + swapAxis.Y].ID != data.ID)
@@ -347,11 +362,12 @@ public static class PixelBoxPhysics
                 if (simulationData.IsValid(x + xSide, y) && HasPixel(x + xSide, y) == false)
                 {
                     SetPixel(new(x + xSide, y), data);
+                    SetPixel(new(x, y), default);
                     newPos = new(x + xSide, y);
                 }
                 else
                 {
-                    SetPixel(new(x, y), data);
+                    SetPixel(new(x, y), data, false);
                 }
             }
 
@@ -372,6 +388,7 @@ public static class PixelBoxPhysics
             else if (simulationData.IsValid(x + axis.X, y + axis.Y) && HasPixel(x + axis.X, y + axis.Y) == false)
             {
                 SetPixel(new(x + axis.X, y + axis.Y), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x + axis.X, y + axis.Y);
             }
             else if (needSwap && swapAxis.Any() && simulationData.IsValid(x + swapAxis.X, y + swapAxis.Y) && IsGas(x + swapAxis.X, y + swapAxis.Y) && simulationData[x + swapAxis.X, y + swapAxis.Y].ID != data.ID)
@@ -382,7 +399,7 @@ public static class PixelBoxPhysics
             }
             else
             {
-                SetPixel(new(x, y), data);
+                SetPixel(new(x, y), data, false);
             }
 
             return newPos;
@@ -418,16 +435,18 @@ public static class PixelBoxPhysics
             else if (simulationData.IsValid(x, y + 1) && HasPixel(x, y + 1) == false)
             {
                 SetPixel(new(x, y + 1), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x, y + 1);
             }
             else if (simulationData.IsValid(x + xAxis, y + 1) && HasPixel(x + xAxis, y + 1) == false)
             {
                 SetPixel(new(x + xAxis, y + 1), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x + xAxis, y + 1);
             }
             else
             {
-                SetPixel(new(x, y), data);
+                SetPixel(new(x, y), data, false);
             }
 
             return newPos;
@@ -444,11 +463,12 @@ public static class PixelBoxPhysics
             else if (simulationData.IsValid(x, y + 1) && HasPixel(x, y + 1) == false)
             {
                 SetPixel(new(x, y + 1), data);
+                SetPixel(new(x, y), default);
                 newPos = new(x, y + 1);
             }
             else
             {
-                SetPixel(new(x, y), data);
+                SetPixel(new(x, y), data, false);
             }
 
             return newPos;
