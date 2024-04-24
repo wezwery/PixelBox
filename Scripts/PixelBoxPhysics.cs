@@ -81,8 +81,8 @@ public static class PixelBoxPhysics
         //}
 
         bool IsValid(int x, int y) => simulationData.IsValid(x, y);
-        bool HasPixel(int x, int y) => simulationData[x, y].HasPixel();
-        bool IsFireOrSmokeOrNone(int x, int y) => (HasPixel(x, y) == false || simulationData[x, y].ID == FIRE_ID || simulationData[x, y].ID == SMOKE_ID);
+        bool HasPixel(int x, int y) => IsValid(x, y) && simulationData[x, y].HasPixel();
+        bool IsFireOrSmokeOrNone(int x, int y) => IsValid(x, y) && (HasPixel(x, y) == false || simulationData[x, y].ID == FIRE_ID || simulationData[x, y].ID == SMOKE_ID);
         bool IsFluid(int x, int y) => HasPixel(x, y) && (simulationData[x, y].Material == PixelData.MaterialEnum.Fluid);
         bool IsGas(int x, int y) => HasPixel(x, y) && simulationData[x, y].Material == PixelData.MaterialEnum.Gas;
         bool IsAcidDestroyable(int x, int y) => HasPixel(x, y) && (simulationData[x, y].Material == PixelData.MaterialEnum.Static || simulationData[x, y].Material == PixelData.MaterialEnum.Sand || simulationData[x, y].Material == PixelData.MaterialEnum.HardSand);
@@ -90,7 +90,7 @@ public static class PixelBoxPhysics
         bool IsSupportedForFire(int x, int y) => IsFireOrSmokeOrNone(x - 1, y) || IsFireOrSmokeOrNone(x + 1, y) || IsFireOrSmokeOrNone(x, y - 1) || IsFireOrSmokeOrNone(x, y + 1);
         bool IsReadyToFire(int x, int y) => HasPixel(x, y) && simulationData[x, y].Flamable && MyMath.RandomPercent <= simulationData[x, y].GetChanceToFlame() && IsSupportedForFire(x, y);
         //bool IsUpdated(int x, int y) => HasPixel(x, y) && simulationData[x, y].Updated;
-        bool IsEmpty(int x, int y) => HasPixel(x, y) == false;
+        bool IsValidAndEmpty(int x, int y) => IsValid(x, y) && HasPixel(x, y) == false;
         bool IsPixel(int x, int y, byte id) => HasPixel(x, y) && simulationData[x, y].ID == id;
 
         for (int x = bounds.Position.X; x < bounds.End.X + 1; x++)
@@ -113,7 +113,7 @@ public static class PixelBoxPhysics
                             {
                                 case CLOUD_ID:
                                     {
-                                        if (MyMath.RandomPercent <= 1f && IsEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 1f && IsValidAndEmpty(x, y + 1))
                                         {
                                             SetPixel(new(x, y + 1), WATER);
                                         }
@@ -121,11 +121,11 @@ public static class PixelBoxPhysics
                                     }
                                 case STORM_CLOUD_ID:
                                     {
-                                        if (MyMath.RandomPercent <= 10f && IsEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 10f && IsValidAndEmpty(x, y + 1))
                                         {
                                             SetPixel(new(x, y + 1), WATER);
                                         }
-                                        if (MyMath.RandomPercent <= 0.1f && IsEmpty(x, y + 1))
+                                        if (MyMath.RandomPercent <= 0.1f && IsValidAndEmpty(x, y + 1))
                                         {
                                             SetRayPixels(FIRE, new(x, y + 1), new(MyMath.Random(-0.5f, 0.5f), 1f), MyMath.Random(50, 1000), simulationData);
                                         }
@@ -153,7 +153,7 @@ public static class PixelBoxPhysics
                                     }
                                 case LIGHTER_ID:
                                     {
-                                        if (IsEmpty(x, y - 1))
+                                        if (IsValidAndEmpty(x, y - 1))
                                         {
                                             SetPixel(new(x, y - 1), FIRE);
                                         }
@@ -230,7 +230,7 @@ public static class PixelBoxPhysics
                                         {
                                             SetFire(new(newPos.X, newPos.Y + 1), true);
                                         }
-                                        if (MyMath.RandomPercent <= smoke_chance && IsEmpty(newPos.X, newPos.Y - 1))
+                                        if (MyMath.RandomPercent <= smoke_chance && IsValidAndEmpty(newPos.X, newPos.Y - 1))
                                         {
                                             SetPixel(new(newPos.X, newPos.Y - 1), SMOKE);
                                         }
@@ -271,7 +271,7 @@ public static class PixelBoxPhysics
                 #region Механика горящих пикселей
                 if (simulationData[newPos.X, newPos.Y] == data && data.Fire)
                 {
-                    if (IsEmpty(newPos.X, newPos.Y - 1))
+                    if (IsValidAndEmpty(newPos.X, newPos.Y - 1))
                     {
                         SetPixel(new(newPos.X, newPos.Y - 1), FIRE);
                     }
