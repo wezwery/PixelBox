@@ -7,12 +7,12 @@ namespace PixelBox.Scripts.Enums;
 
 public static class PixelDataEnums
 {
-    private static float ColorOffset => MyMath.Random(0.99f, 1.01f);
+    public static float ColorOffset => MyMath.Random(0.95f, 1.05f);
 
-    public static readonly int Length = typeof(PixelDataEnums).GetProperties().Length - 1;
-    public static readonly string[] Names = typeof(PixelDataEnums).GetProperties().Skip(1).Select(x => x.Name).ToArray();
+    public static readonly int Length = typeof(PixelDataEnums).GetProperties().Length - 2;
+    public static readonly string[] Names = typeof(PixelDataEnums).GetProperties().Skip(2).Select(x => x.Name).ToArray();
 
-    public static PixelData[] ALL => typeof(PixelDataEnums).GetProperties().Skip(1).Select(x => x.GetValue(null)).Cast<PixelData>().ToArray();
+    public static PixelData[] ALL => typeof(PixelDataEnums).GetProperties().Skip(2).Select(x => x.GetValue(null)).Cast<PixelData>().ToArray();
 
     public static PixelData SAND => new(SAND_ID)
     {

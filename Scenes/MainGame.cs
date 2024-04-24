@@ -92,7 +92,7 @@ public partial class MainGame : Node2D
         {
             for (int y = 0; y < ChunksCount.Y; y++)
             {
-                simulationImages[x, y] = Image.Create(xSize, ySize, false, Image.Format.Rgba4444);
+                simulationImages[x, y] = Image.Create(xSize, ySize, false, Image.Format.Rgba8);
                 simulationImages[x, y].Fill(bg_color);
                 simulationTextures[x, y] = ImageTexture.CreateFromImage(simulationImages[x, y]);
                 var sprite = new Sprite2D();
@@ -166,7 +166,7 @@ public partial class MainGame : Node2D
                         PixelData data = SimulationData[bounds.Position.X + xx, bounds.Position.Y + yy];
                         if (data.HasPixel())
                         {
-                            Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) : data.Color;
+                            Color color = data.Fire || data.ID == PixelDataIDs.FIRE_ID ? MyMath.Random(Color.Color8(247, 127, 0), Color.Color8(214, 40, 40), Color.Color8(252, 191, 73)) * PixelDataEnums.ColorOffset : data.Color;
                             simulationImages[x, y].SetPixel(xx, yy, color);
                         }
                         else
@@ -249,12 +249,19 @@ public partial class MainGame : Node2D
         }
         if (Directory.Exists(PathToScreenshotFolder) == false) Directory.CreateDirectory(PathToScreenshotFolder);
         var index = Directory.EnumerateFiles(PathToScreenshotFolder).Count();
-        using var image = Image.Create(SimulationSize.X, SimulationSize.Y, false, Image.Format.Rgba4444);
+        using var image = Image.Create(SimulationSize.X, SimulationSize.Y, false, Image.Format.Rgba8);
         for (int x = 0; x < ChunksCount.X; x++)
         {
             for (int y = 0; y < ChunksCount.Y; y++)
             {
                 image.BlitRect(simulationImages[x, y], new(Vector2I.Zero, simulationImages[x, y].GetSize()), ChunkRects[x, y].Position);
+            }
+        }
+        for (int x = 0; x < SimulationSize.X; x++)
+        {
+            for (int y = 0; y < SimulationSize.Y; y++)
+            {
+                if (SimulationData[x, y].HasPixel() == false) image.SetPixel(x, y, Colors.Transparent);
             }
         }
         var err = image.SavePng($"{PathToScreenshotFolder}{index}.png");
