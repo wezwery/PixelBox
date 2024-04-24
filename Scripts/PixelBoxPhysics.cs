@@ -70,15 +70,6 @@ public static class PixelBoxPhysics
     {
         var bounds = MainGame.Instance.ChunkRects[chunkX, chunkY];
         var simulationData = MainGame.Instance.SimulationData;
-        // ПЕРЕМЕЩЕНО В MainGame.UpdateChunks()
-        //for (int x = bounds.Position.X; x < bounds.End.X; x++)
-        //{
-        //    for (int y = bounds.Position.Y; y < bounds.End.Y; y++)
-        //    {
-        //        if (simulationData[x, y].HasPixel() == false) continue;
-        //        simulationData[x, y].Updated = false;
-        //    }
-        //}
 
         bool IsValid(int x, int y) => simulationData.IsValid(x, y);
         bool HasPixel(int x, int y) => IsValid(x, y) && simulationData[x, y].HasPixel();
@@ -101,7 +92,6 @@ public static class PixelBoxPhysics
                 PixelData data = simulationData[x, y];
                 if (data.HasPixel() == false || data.Updated) continue;
                 data.Updated = true;
-                //SetPixel(new(x, y), default);
                 Vector2I newPos = new(x, y);
                 switch (data.Material)
                 {

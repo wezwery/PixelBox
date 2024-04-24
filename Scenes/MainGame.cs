@@ -319,10 +319,6 @@ public partial class MainGame : Node2D
         {
             MakeScreenshot();
         }
-        //if (Input.IsActionJustPressed("NextFrame"))
-        //{
-        //    UpdateChunks(true);
-        //}
     }
 
     public void Clear()
