@@ -20,7 +20,7 @@ public partial class MainGameCamera : Camera2D
     {
         if (Input.IsActionJustPressed("ZoomOut"))
         {
-            Zoom = (Zoom - new Vector2(0.1f, 0.1f)).ClampMin(new Vector2(3f, 3f));
+            Zoom = (Zoom - new Vector2(0.1f, 0.1f)).ClampMin(new Vector2(1f, 1f));
         }
         else if (Input.IsActionJustPressed("ZoomIn"))
         {
