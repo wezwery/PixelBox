@@ -77,6 +77,7 @@ public partial class MainGame : Node2D
         ChunksCount -= ChunksCount % 2;
         if (ChunksCount.X == 0) ChunksCount.X = 1;
         if (ChunksCount.Y == 0) ChunksCount.Y = 1;
+
         SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
         chunks = new Sprite2D[ChunksCount.X, ChunksCount.Y];
         RequestToUpdates = new byte[ChunksCount.X, ChunksCount.Y];
@@ -101,6 +102,7 @@ public partial class MainGame : Node2D
                 sprite.Centered = false;
                 sprite.TextureFilter = TextureFilterEnum.Nearest;
                 sprite.Position = pos;
+                sprite.ShowBehindParent = true;
                 chunks[x, y] = sprite;
                 sprite.Texture = simulationTextures[x, y];
                 ChunkRects[x, y] = new Rect2I(pos, xSize, ySize);
@@ -230,6 +232,7 @@ public partial class MainGame : Node2D
             Debugger.DisplayText($"     ChanceToFlame: {pixelData.GetChanceToFlame()}%");
             Debugger.DisplayText($"     ChanceToDestroyByFire: {pixelData.GetChanceToDestroyByFire()}%");
         }
+        QueueRedraw();
 #endif
 
         MousePoint = GetGlobalMousePosition().FloorToInt();
@@ -359,4 +362,20 @@ public partial class MainGame : Node2D
             UpdateChunks();
         }
     }
+
+#if DEBUG
+    public override void _Draw()
+    {
+        if (Debugger.IsVisible == false) return;
+        for (int x = 0; x < ChunksCount.X; x++)
+        {
+            for (int y = 0; y < ChunksCount.Y; y++)
+            {
+                if (RequestToUpdates[x, y] == 0) continue;
+
+                DrawRect(ChunkRects[x, y], Colors.Red, false, 0.5f);
+            }
+        }
+    }
+#endif
 }

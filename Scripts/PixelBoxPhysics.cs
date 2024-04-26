@@ -246,7 +246,7 @@ public static class PixelBoxPhysics
                                         if (MyMath.RandomPercent <= 5f && IsValid(newPos.X, newPos.Y + 1) && IsAcidDestroyable(newPos.X, newPos.Y + 1))
                                         {
                                             SetPixel(new(newPos.X, newPos.Y + 1), default);
-                                            if (MyMath.RandomPercent <= 1f)
+                                            if (MyMath.RandomPercent <= 5f)
                                             {
                                                 SetPixel(new(newPos.X, newPos.Y), default);
                                             }
