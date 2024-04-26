@@ -99,7 +99,7 @@ public static class PixelBoxPhysics
                     case PixelData.MaterialEnum.Static:
                         {
                             #region Структура
-                            SetPixel(new(x, y), data, false);
+                            SetPixel(newPos, data, false);
                             switch (data.ID)
                             {
                                 case CLOUD_ID:
@@ -178,7 +178,7 @@ public static class PixelBoxPhysics
                                     {
                                         if (MyMath.RandomPercent <= 0.1f && (IsValid(newPos.X, newPos.Y - 1) == false || simulationData[newPos.X, newPos.Y].ID == 5))
                                         {
-                                            SetPixel(new(newPos.X, newPos.Y), WATER);
+                                            SetPixel(newPos, WATER);
                                         }
                                         break;
                                     }
@@ -227,7 +227,7 @@ public static class PixelBoxPhysics
                                         }
                                         if (MyMath.RandomPercent <= 30f)
                                         {
-                                            SetPixel(new(newPos.X, newPos.Y), default);
+                                            SetPixel(newPos, default);
                                         }
                                         break;
                                     }
@@ -248,7 +248,7 @@ public static class PixelBoxPhysics
                                             SetPixel(new(newPos.X, newPos.Y + 1), default);
                                             if (MyMath.RandomPercent <= 5f)
                                             {
-                                                SetPixel(new(newPos.X, newPos.Y), default);
+                                                SetPixel(newPos, default);
                                             }
                                         }
 
