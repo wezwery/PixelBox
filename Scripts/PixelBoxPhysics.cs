@@ -10,6 +10,7 @@ namespace PixelBox.Scripts;
 public static class PixelBoxPhysics
 {
     private const float smoke_chance = 1f;
+    private const byte ticks_before_sleep = 5;
 
     private static void SetRayPixels(PixelData dataToSet, Vector2I from, Vector2 axis, int distance, PixelData[,] simulationData)
     {
@@ -24,7 +25,7 @@ public static class PixelBoxPhysics
 
     public static void SetRequestToUpdate(int x, int y)
     {
-        MainGame.Instance.RequestToUpdates[x, y] = true;
+        MainGame.Instance.RequestToUpdates[x, y] = ticks_before_sleep;
     }
 
     public static void SetFire(Vector2I pos, bool fire)
@@ -44,7 +45,7 @@ public static class PixelBoxPhysics
         {
             y++;
         }
-        return new(x == 0 ? x : x - 1, y == 0 ? y : y - 1);
+        return new((x - 1).ClampMin(0), (y - 1).ClampMin(0));
     }
     public static void SetPixel(Vector2I pos, PixelData data, bool requestToUpdate = true)
     {

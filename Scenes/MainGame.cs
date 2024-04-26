@@ -26,7 +26,7 @@ public partial class MainGame : Node2D
     [Export] public Vector2I ChunksCount = new(3, 3);
 
     private Sprite2D[,] chunks;
-    public bool[,] RequestToUpdates;
+    public byte[,] RequestToUpdates;
 
     private MyTimer simulationUpdater;
     private Image[,] simulationImages;
@@ -79,7 +79,7 @@ public partial class MainGame : Node2D
         if (ChunksCount.Y == 0) ChunksCount.Y = 1;
         SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
         chunks = new Sprite2D[ChunksCount.X, ChunksCount.Y];
-        RequestToUpdates = new bool[ChunksCount.X, ChunksCount.Y];
+        RequestToUpdates = new byte[ChunksCount.X, ChunksCount.Y];
         simulationImages = new Image[ChunksCount.X, ChunksCount.Y];
         simulationTextures = new ImageTexture[ChunksCount.X, ChunksCount.Y];
         ChunkRects = new Rect2I[ChunksCount.X, ChunksCount.Y];
@@ -137,7 +137,7 @@ public partial class MainGame : Node2D
         {
             for (int y = 0; y < ChunksCount.Y; y++)
             {
-                chunksToUpdate[x, y] = RequestToUpdates[x, y];
+                chunksToUpdate[x, y] = RequestToUpdates[x, y] > 0;
             }
         }
 
@@ -156,7 +156,7 @@ public partial class MainGame : Node2D
             {
                 //bool pointer = PixelBoxPhysics.GetChunkByPoint(MousePoint).Distance(new(x, y)) > 0.5f;
                 if (chunksToUpdate[x, y] == false) continue;
-                RequestToUpdates[x, y] = false;
+                RequestToUpdates[x, y]--;
                 SimulationData = PixelBoxPhysics.Update(x, y);
                 var bounds = ChunkRects[x, y];
                 for (int xx = 0; xx < bounds.Size.X; xx++)
@@ -331,7 +331,7 @@ public partial class MainGame : Node2D
     public void Clear()
     {
         SimulationData = new PixelData[SimulationSize.X, SimulationSize.Y];
-        RequestToUpdates = new bool[ChunksCount.X, ChunksCount.Y];
+        RequestToUpdates = new byte[ChunksCount.X, ChunksCount.Y];
         for (int x = 0; x < ChunksCount.X; x++)
         {
             for (int y = 0; y < ChunksCount.Y; y++)
