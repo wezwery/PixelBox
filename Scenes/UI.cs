@@ -11,8 +11,10 @@ public partial class UI : CanvasLayer
     [Export, ExportCategory("Settings/SpeedControl")] private Button playPauseBtn;
     [Export] private Button speed0d5x, speed1x, speed1d5x, speed2x, speed3x;
     [Export] private Label currentSpeedLabel;
+
     [Export, ExportCategory("Settings/Simulation")] private Button clearBtn;
     [Export] private Button screenshotBtn;
+
     [Export, ExportCategory("Settings/PaintSize")] private Label paintSizeLabel;
     [Export] private Slider paintSizeSlider;
 
@@ -63,6 +65,13 @@ public partial class UI : CanvasLayer
         }));
     }
 
+    public override void _Process(double delta)
+    {
+        Control gridParent = grid.GetParent<Control>();
+        gridParent.SetSize(gridParent.Size with { Y = grid.Size.Y + 10 });
+        gridParent.SetOffsetsPreset(Control.LayoutPreset.BottomWide, Control.LayoutPresetMode.KeepSize);
+    }
+
     public void UpdatePauseIcon()
     {
         if (MainGame.Instance.Paused)
@@ -108,9 +117,10 @@ public partial class UI : CanvasLayer
             {
                 MainGame.Instance.SetSelectedPixelType(index);
             }));
-            ins.GetNode<ColorRect>("BG/Selected").Color = item.Color;
-            ins.GetNode<Label>("BG/Label").Text = Tr(PixelDataEnums.Names[i]);
+            ins.GetNode<ColorRect>("BG/Container/Selected").Color = item.Color;
+            ins.GetNode<Label>("BG/Container/Label").Text = Tr(PixelDataEnums.Names[i]);
             grid.AddChild(ins);
+            ins.CustomMinimumSize = ins.Size = new(20 + ins.GetNode<Label>("BG/Container/Label").Size.X, 15);
         }
     }
     public void UpdateSelectedPixelData(int selected)

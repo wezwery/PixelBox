@@ -19,7 +19,7 @@ script = ExtResource("2_lp476")
 [node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("grid", "playPauseBtn", "speed0d5x", "speed1x", "speed1d5x", "speed2x", "speed3x", "currentSpeedLabel", "clearBtn", "screenshotBtn", "paintSizeLabel", "paintSizeSlider")]
 script = ExtResource("3_5tmgb")
 pixelDataScene = ExtResource("3_ptsef")
-grid = NodePath("Pixels/ScrollContainer/Grid")
+grid = NodePath("Pixels/Grid")
 playPauseBtn = NodePath("Settings/Grid/SpeedControl/PauseBtn")
 speed0d5x = NodePath("Settings/Grid/SpeedControl/Speed0_5x")
 speed1x = NodePath("Settings/Grid/SpeedControl/Speed1x")
@@ -37,22 +37,21 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -60.0
+offset_top = -65.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_force_pass_scroll_events = false
 color = Color(0, 0, 0, 0.196078)
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/Pixels"]
+[node name="Grid" type="HFlowContainer" parent="UI/Pixels"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 5.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Grid" type="HBoxContainer" parent="UI/Pixels/ScrollContainer"]
-layout_mode = 2
 
 [node name="Settings" type="ColorRect" parent="UI"]
 anchors_preset = 10
