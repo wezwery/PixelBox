@@ -63,6 +63,13 @@ public partial class UI : CanvasLayer
         }));
     }
 
+    public override void _Process(double delta)
+    {
+        Control gridParent = grid.GetParent<Control>();
+        gridParent.SetSize(gridParent.Size with { Y = grid.Size.Y + 10 });
+        gridParent.SetOffsetsPreset(Control.LayoutPreset.BottomWide, Control.LayoutPresetMode.KeepSize);
+    }
+
     public void UpdatePauseIcon()
     {
         if (MainGame.Instance.Paused)
@@ -108,9 +115,10 @@ public partial class UI : CanvasLayer
             {
                 MainGame.Instance.SetSelectedPixelType(index);
             }));
-            ins.GetNode<ColorRect>("BG/Selected").Color = item.Color;
-            ins.GetNode<Label>("BG/Label").Text = Tr(PixelDataEnums.Names[i]);
+            ins.GetNode<ColorRect>("BG/Container/Selected").Color = item.Color;
+            ins.GetNode<Label>("BG/Container/Label").Text = Tr(PixelDataEnums.Names[i]);
             grid.AddChild(ins);
+            ins.CustomMinimumSize = ins.Size = new(20 + ins.GetNode<Label>("BG/Container/Label").Size.X, 15);
         }
     }
     public void UpdateSelectedPixelData(int selected)
