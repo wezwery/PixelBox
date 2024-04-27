@@ -11,8 +11,10 @@ public partial class UI : CanvasLayer
     [Export, ExportCategory("Settings/SpeedControl")] private Button playPauseBtn;
     [Export] private Button speed0d5x, speed1x, speed1d5x, speed2x, speed3x;
     [Export] private Label currentSpeedLabel;
+
     [Export, ExportCategory("Settings/Simulation")] private Button clearBtn;
     [Export] private Button screenshotBtn;
+
     [Export, ExportCategory("Settings/PaintSize")] private Label paintSizeLabel;
     [Export] private Slider paintSizeSlider;
 
